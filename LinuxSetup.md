@@ -52,7 +52,7 @@ cd - go home / ~
 pwd = present / current working directory = cwd
 mv "old location" "new location" = move and rename files and dirs, e.g. rename java symlink: cd /usr/bin, sudo mv java javaOld
 /etc/init.d is symlink to rc.d/init.d and the latter contains init.d and rc[0-6].d
-uname -r linux kernel version
+uname -r linux kernel version #ubuntu kernel version #ubuntu version
 dmesg #bootloader messages
 ```
 #### nautilus #filer #explorer
@@ -685,6 +685,18 @@ mount -t smbfs //TAG00944648039/f/ /mnt/TAG00944648039/f/ -o username=gy
 #Ubuntu - first share on a new Windows machine!!!:
 smb://172.16.101.236 user DYNATRACE/guenter.huber domain DYNATRACE
 
+#### samba #smb on #jetson
+sudo apt install samba
+sudo nano /etc/samba/smb.conf
+[sambashare]
+    comment = Samba on Ubuntu
+    path = /home/nvidia/Downloads
+    read only = no
+    browsable = yes
+sudo service smbd restart
+sudo smbpasswd -a nvidia
+#client nautilus: smb://10.0.0.20 Downloads is sambashare
+
 #### /etc/sudoers explanation
 username ALL=NOPASSWD:/path/to/command
 username ALL=(ALL) NOPASSWD:/path/to/command
@@ -727,6 +739,9 @@ sudo apt autoremove
 cat /etc/group
 #Open VMware #OpenVMware Tools install on converted #AudiCar #Virtualbox #Ubuntu 16.04
 sudo apt install open-vm-tools open-vm-tools-desktop
+
+#System Settings > Keyboard > Shortcuts tab > Custom > +
+gnome-system-monitor #task manager #shift^Esc doesn work, but good to know app
 
 #boot repair
 sudo add-apt-repository ppa:yannubuntu/boot-repair
@@ -818,9 +833,17 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
   WebView.setWebContentsDebuggingEnabled(true);
 }
 
-#### Android Studio install: unzip to ~
+#### Android Studio Ubuntu 16.04 install: d/l & unzip to ~ #/usr/share nonsense
 cd android-studio/bin
 ./studio.sh
+#check for hw virtualization and if on in bios
+egrep -c '(vmx|svm)' /proc/cpuinfo #must be > 0
+sudo apt install cpu-checker
+kvm-ok #response: /dev/kvm exists #KVM acceleration can be used
+#https://linuxconfig.org/simple-virtualization-with-ubuntu-16-04-and-kvm (ignore network bridge)
+sudo apt-get install qemu-kvm libvirt-bin virt-manager #for #Android Studio #AVDs
+#then add Virtual Machine Manager to Launch
+#restart; libvirt-qemu user visible on login, gy added - no need to add
 
 #### Android Studio 64bit Windows
 #### Gradle use default gradle wrapper - nogo -> local Gradle distri
@@ -829,6 +852,22 @@ C:/Users/cwat-ghuber/.gradle/wrapper/dists/gradle-2.4-all/3i2gobhdl0fm2tosnn15g5
 #cd C:\Users\cwat-ghuber\AndroidStudioProjects\ATest3
 #gradlew build
 
+#### AVD #AVD #Android Virtual Device #Emulator #Android Emulator
+C:\Users\gy\.android\avd #AVD #Android Virtual Device definitions
+#quick boot switch AVD Manager > Advanced > Emulated Performance > Cold boot #tower
+#C:\workspaces\sdks\android\tools\bin\avdmanager.bat #AVD Manager command line tool
+avdmanager list target #Android images
+#emulator CMDs #AVD CMDs
+C:\workspaces\sdks\android\emulator\emulator @Pixel_2_API_P -camera-front webcam0
+emulator -list-avds
+adb emu screenrecord start --time-limit 10 [path to save video]/sample_video.webm | .GIF
+adb emu screenrecord screenshot [destination-directory]
+
+#### hellosceneform normal install: "Cannot create AR..."
+#adb says ARcore is installed but it isn´t visible in apps
+cd C:\workspaces\sdks\android\platform-tools
+#consequence: install ARcore on virgin AVD w/o hellosceneform and it appears in apps:
+adb install com.google.ar.core_1.2.180425099_x86.apk
 
 #### VMware change boot order,... in .vmx file to force BIOS or delay boot 10 sec for F2 into BIOS
 bios.forceSetupOnce = "TRUE"
@@ -849,11 +888,21 @@ LogCat in Android Studio?
 storage/emulated/0/files
 #SD-card named storage/extSdCard
 
-#### Wear Android Wear
+#### Wear Android Wear #### Huawei Watch 2
 #app maintainance: Einstellungen > Apps & Benachrichtigungen
+https://www.xda-developers.com/pair-android-wear-without-factory-reset/
+cd C:\workspaces\sdks\android\platform-tools
+adb devices #returns TKQ7N17C14001039 device (S#) for #Huawei Watch 2 1039
+#switch off Bluetooth (and WiFi?) on connected / to connect phone / tablet
+adb shell “pm clear com.google.android.gms && reboot”
+#authorize adb connection to watch again and
+adb shell “am start -a android.bluetooth.adapter.action.REQUEST_DISCOVERABLE”
+#switch on Bluetooth (and WiFi?) and start Wear app to connect phone
 
+#### Watch #### Apple Watch #Apple Watch
+#app force-quit: long-press side-button (shutdown,...) long-press crown
 
-#### TightVNC leave full screen ^-alt-shift-f or ^esc
+#### TightVNC leave full screen ^-alt-shift-f or ^esc; Remmina RD Client Ubuntu right-^f
 #Search Your Computer for Desktop Sharing to configure Vino
 #### Ubuntu enable #VNC w/o encryption; gconf-editor built-in (Configuration Editor):
 #TightVNC: no matching security type
@@ -862,6 +911,70 @@ sudo apt-get install dconf-tools
 #search for require-encryption (is in org->gnome->desktop->remote-access)
 ps ax | grep vino #just in case: check if vino #vnc-server is running
 
+#### Ubuntu post-install steps #ubuntu -post-install
+##Activities > Type to find, Start and Pin to Favs each:
+#Settings, then Sharing > Activate and Require a Pw
+#dconf settings > ^F require-encryption
+#install #Remina or #Remote Desktop #Vinagre for #Gnome leave Viagre through mouse at top edge
+#### Google Chrome on Ubuntu
+cd Downloads
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+#simply double-click pckg #sudo dpkg -i Downloads/google-chrome-stable_current_amd64.deb
+google-chrome #pin to Favs and del d/l
+#### exFAT on Ubuntu
+sudo apt-get install exfat-fuse exfat-utils
+#access sd card in VMware: VM settings > Hardware tab Add >
+ IDE > Use physical disk > Use entire (> rename vmdk? none for physical
+##GPU-install
+#dpkg -i installed CUDA removal: Synaptic > Status button left bottom > Installed (local or obsolete vertical tab)
+##CUDA Ubuntu install according to:
+https://developer.nvidia.com/cuda-90-download-archive?target_os=Linux&target_arch=x86_64&target_distro=Ubuntu&target_version=1704&target_type=deblocal
+sudo apt-key add /var/cuda-repo-9-0-local/7fa2af80.pub
+sudo dpkg -i cuda-repo-ubuntu1704-9-0-local_9.0.176-1_amd64.deb
+sudo dpkg -i <patchfile>
+sudo apt update
+sudo apt install cuda
+https://developer.nvidia.com/rdp/cudnn-download
+https://docs.nvidia.com/deeplearning/sdk/cudnn-install/index.html
+sudo dpkg -i <cuDNNruntime>
+sudo dpkg -i <cuDNNdev> #dependent on runtime
+sudo dpkg -i <cuDNNdoc>
+bash Downloads/Anaconda3-5.2.0-Linux-x86_64.sh #close terminal and open new one #Anaconda3
+conda create -n tfgpu python=3.6
+source activate tfgpu
+pip install --ignore-installed --upgrade tensorflow-gpu
+conda install jupyter
+sudo apt-get install qemu-kvm libvirt-bin virt-manager #for #Android Studio #AVDs
+#then add Virtual Machine Manager to Launch
+#Android Studio: d/l, unzip to ~, cd android-studio/bin, ./studio.sh
+#post-install-end
+
+#### eGPU on #ubuntu 18.04 #eGPU #post-installation on #NUC #GNUB1804 w kernel 4.15.0-23-generic (uname -r)
+#immediately came up with approve #nvidia driver on NUC GNUB1804 when tbtadm was installed
+lshw -numeric -C display #lists adapters
+#https://www.reddit.com/r/Ubuntu/comments/7eb015/hp_omen_accelerator_egpu_works_on_ubuntu_1710/
+https://github.com/intel/thunderbolt-software-user-space #for device approval prerequisites:
+sudo apt-get install cmake libboost-filesystem-dev txt2tags pkg-config
+#thunderbolt-software-user-space-master.zip d/l and unzip to ~
+cd /home/gy/thunderbolt-software-user-space-master
+mkdir build
+https://developer.nvidia.com/cuda-90-download-archive?target_os=Linux&target_arch=x86_64&target_distro=Ubuntu&target_version=1704&target_type=deblocal
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake --build . #incl trailing period!
+#Built target /usr/local/bin/tbtadm
+sudo cmake --build . --target install
+#tbtadm usage: devices | peers | topology | approve [--once] <route-string> | approve-all [--once] | acl | add <route-string> | remove <uuid>|<route-string> | remove-all
+tbtadm devices
+tbtadm topology
+sudo tbtadm add 0-1 #Added to ACL
+https://websiteforstudents.com/install-proprietary-nvidia-gpu-drivers-on-ubuntu-16-04-17-10-18-04/
+sudo add-apt-repository ppa:graphics-drivers/ppa
+sudo apt update
+#check for latest Nvidia driver, but do not download and supply the major version to below cmd:
+sudo apt install nvidia-390 #reboot
+#nvidia-smi #?nvidia card information? #/etc/X11/xorg.conf #?
+#eGPU #post-installation-end
 
 #### gparted partitioning
 sudo apt-get install gparted
@@ -906,14 +1019,30 @@ sudo java -jar ~/Downloads/dynatrace-6.3.0.1278-darwin-x86.jar
 sudo chown -R guenter.huber:guenter.huber /opt/dynatrace-6.3
 
 
-#### Watch Apple Watch
-#app force-quit: long-press side-button (shutdown,...) long-press crown
-
-
-#### Docker on Ubuntu
+#### Docker-ce on Ubuntu #docker-ce (community edition package)
 **************
-#### Ubuntu 16.04: https://docs.docker.com/engine/installation/linux/ubuntulinux/
-#### optional: https://docs.docker.com/engine/admin/systemd/#custom-docker-daemon-options
+#### Ubuntu 16.04: https://docs.docker.com/install/linux/docker-ce/ubuntu/
+sudo apt-get remove docker docker-engine docker.io #try uninstall older, differently named versions - JIC
+#overlay2 #OverlayFS storage driver instead of #aufs on Kernels > 4
+sudo apt-get update #then install packages to allow apt to use a repository over HTTPS:
+sudo apt-get install apt-transport-https ca-certificates curl software-properties-common
+#Add Docker's official GPG key:
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+sudo apt-get update
+sudo apt-get install docker-ce
+#Docker Ubuntu 18.04 .deb #non-snappy
+#as of 20180617 d/l .deb only exists for 17.10 Artful, not for 18.03 Bionic
+https://download.docker.com/linux/ubuntu/dists/artful/pool/stable/amd64/
+sudo dpkg -i Downloads/docker-ce_18.03.1_ce-0_ubuntu_amd64.deb
+sudo apt update
+sudo adduser $USER docker
+newgrp docker
+docker run hello-world
+#non-snappy-end
+docker run hello-world #NO sudo!
+docker run -it ubuntu bash
+#### Docker optional: https://docs.docker.com/engine/admin/systemd/#custom-docker-daemon-options
 #start docker with systemd as boot and service manager
 sudo systemctl start docker
 #daemon / service at boot:
@@ -926,9 +1055,8 @@ FragmentPath=/lib/systemd/system/docker.service
 #empty ExecStart= defeats autostart
 sudo nohup gedit /lib/systemd/system/docker.service
 
-
-sudo apt-get upgrade docker-engine
-sudo apt-get purge docker-engine
+#old? sudo apt-get upgrade docker-engine
+#sudo apt-get purge docker-engine
 sudo apt-get autoremove
 rm -rf /var/lib/docker
 ****************
@@ -940,8 +1068,7 @@ docker commit <container> <some_name>
 JOB=$(docker run -d ubuntu /bin/sh -c "while true; do echo Hello; sleep 1; done")
 #apply var to stop, restart, kill, rm container
 docker start $JOB
-#list all containers, not only running
-docker ps -a
+docker ps -a #list all containers, not only running
 #stop all running containers
 docker kill $(docker ps -q)
 #delete all containers
@@ -1024,6 +1151,10 @@ git config --global user.email "guenter.huber22@gmail.com"
 git config --global user.name "ai-bits"
 git commit README.md -m "car kits part 1"
 git push -u origin master
+
+#### LinuxSetup #LinuxSetup
+cd C:\Users\gy\Downloads\LinuxSetup
+git commit LinuxSetup.md -m "20180621"
 
 #### online-bookmarks #xampp #php C:\xampp\htdocs\online-bookmarks
 #after install.php renamed to installRenamedToHideIt.php
@@ -1144,13 +1275,16 @@ sudo apt install git
 #better not install to pwd (with period at the command end) but to ud120-projects
 git clone https://github.com/udacity/ud120-projects.git
 
-#### CUDA
-#### CUDA 8.0 Debian package
+#### CUDA Ubuntu 8.0 Debian package
 sudo dpkg --install cuda-repo-ubuntu1604-8-0-local-ga2_8.0.61-1_amd64.deb
 sudo apt-get update
 sudo apt-get install cuda
 
-#### CUDA 9.1 Debian package
+#### CUDA Windows 9.0
+#cuDNN for CUDA 9.0 - items copied to respective directories
+https://developer.nvidia.com/rdp/cudnn-download
+
+#### CUDA Ubuntu 9.1 Debian package
 https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html #ubuntu-installation
 sudo dpkg -i Downloads/cuda-repo-ubuntu1604-9-1-local_9.1.85-1_amd64.deb
 #sudo apt-key add /var/cuda-repo-<version>/7fa2af80.pub #translates to:
@@ -1247,11 +1381,23 @@ localhost:8888 #beware to use the token stated when jupyter notebook server is s
 python -c 'import os; import inspect; import tensorflow; print(os.path.dirname(inspect.getfile(tensorflow)))'
 #returns /home/gy/anaconda3/envs/tensorflow/lib/python3.5/site-packages/tensorflow
 
-#### TensorFlow AVX2 on 64GB USB for NUC GNUB Ubuntu 16.04
+#### TensorFlow GPU on GNUC for #eGPU
+conda create -n tfgpu pip python=3.6
+activate tfgpu
+pip install --ignore-installed --upgrade tensorflow-gpu
+
+#### TensorFlow AVX2 on 64 GB USB for NUC GNUB Ubuntu 16.04
 #https://github.com/mind/wheels
 conda create -n tensorflow python=3.6
 #20180103
 pip install --ignore-installed --upgrade https://github.com/mind/wheels/releases/download/tf1.4.1-cpu/tensorflow-1.4.1-cp36-cp36m-linux_x86_64.whl
+
+#### TensorFlow 1.8 GPU #eGPU on 160 GB USB HD for NUC GNUB1804 Ubuntu 18.04
+bash Anaconda3-5.2.0-Linux-x86_64.sh #after download
+conda create -n tfgpu python=3.6
+source activate tfgpu
+conda install jupyter
+
 
 #### TensorFlow Docker install on 128GB USB - 3 GB download
 docker run -it -p 8888:8888 gcr.io/tensorflow/tensorflow:latest-devel-gpu
@@ -1352,7 +1498,7 @@ tensorboard --logdir log
 #### Hvass-labs ~/tf/TensorFlow-Tutorials/01_Simple_Linear_Model
 #01_Simple_Linear_Model_annotated for libs needed,...
 
-#### Atari 2600 VCS emulator Stella
+#### Atari 2600 VCS #atari emulator #atari #emulator Stella
 https://stella-emu.github.io/downloads.html
 sudo dpkg -i Downloads/stella_5.0.2-1_amd64.deb
 sudo apt update
@@ -1769,19 +1915,10 @@ sudo sysv-rc-conf -P
 sudo systemctl start docker
 
 
-#### Google Chrome on Ubuntu
-sudo dpkg -i Downloads/google-chrome-stable_current_amd64.deb #simply double-click!!
-google-chrome
 #### gimp on Ubuntu
 sudo add-apt-repository ppa:otto-kesselgulasch/gimp
 sudo apt update
 sudo apt-get install gimp
-
-
-#### exFAT on Ubuntu
-sudo apt-get install exfat-fuse exfat-utils
-#access sd card in VMware: VM settings > Hardware tab Add >
- IDE > Use physical disk > Use entire (> rename vmdk? none for physical
 
 #### Ubuntu package install when already installed: x set to manually installed
 sudo apt-mark auto x
@@ -1795,6 +1932,17 @@ glxinfo #lists driver details, but only Nvidia
 #gedit /etc/X11/xorg.conf
 #lists both adapters with details:
 sudo lshw -C video
+
+#### Ubuntu 16.04 #nvidia driver on tower
+#sudo add-apt-repository ppa:graphics-drivers/ppa #?? didn´t do it
+#Ubuntu Suchen (top left) nvidia brings up Nvidia X Server Settings when driver is installed
+#sudo apt-get purge nvidia* #to comletely remove
+
+#### USB camera on Tower Ubuntu1604
+lsusb #Bus 002 Device 003: ID 1908:2311 GEMBIRD
+dmesg #system msgs...: usb 2-2: Product: USB2.0 PC CAMERA
+
+
 
 #### windows 10 Windows-Subsystem für Linux WSL file system location
 %localappdata%\Lxss\rootfs #=
@@ -1840,6 +1988,41 @@ source ~/.profile
 workon Sunfounder #NOT DONE
 #spyder on #raspbian
 sudo apt install spyder #not pip
+
+#### OpenCV 3.4.1 Windows https://docs.opencv.org/3.4/d3/d52/tutorial_windows_install.html
+OPENCV_DIR = C:\dl\OpenCV\opencv-3.4.1\build\x64\vc14 #user env var #VC14 NOT VC15 in VS15 2017!
+#DON'T MESS WITH (user) %PATH% WITH SETX!!! MERGES sys %PATH%! TRUNCATES TO 1024! /m messes w/ sys %PATH%
+%OPENCV_DIR%\bin #added to user Path #echo %OPENCV_DIR%
+https://docs.opencv.org/3.4/dd/d6e/tutorial_windows_visual_studio_opencv.html
+#VS 2017 Installer > Sprachpakete Tab; VS > Extras E:Tools > Optionen > Umgebung > Intl Einstellungen
+#VS 15.7.1 File > New > New Project > Installed > VC++ > Win Console App
+#F:\VS2015\Projects\imshow #VS2015!! copied F:\VS2015\PropertySheetsVS2017BAK\OpenCVDbgx64.props & OpenCVRlsx64.props into <sln>\<proj>\ and then
+#View > Other Wins > Property Manager; Debug & Release x64 (NOT Win32) > Add Existing Property Sheet from <sln>\<proj>\
+#Copy needed .props from PropertySheetsVS2017BAK\ to <sln>\<proj>\! Don´t bother to reference!
+#Property Sheet content for Debug | x64:
+#Property Sheet > Common > C > General > Additional Incl Dirs: $(OPENCV_DIR)\..\..\include
+##Linker > General > Addtl Lib Dirs: $(OPENCV_DIR)\lib
+##Linker > Input > Addtl Deps: opencv_world341d.lib w/ d for debug; opencv_world341.lib w/o d for release
+#Here on $(OPENCV_DIR)\lib path it´s an all-in-one file; in v2.4 it´s separate opencv_*.lib files
+##OK & Save Property Sheet!!! Do same for release.
+#imshow.cpp # #include "stdafx.h" //from auto-generated proj as first line!
+#used code from https://docs.opencv.org/3.4/db/deb/tutorial_display_image.html to understand placement of image (not in sln but proj dir)
+#copy C:\dl\OpenCV\opencv-3.4.1\sources\samples\data\opencv-logo.png to F:\VS2015\Projects\imshow\ and Run from IDE
+#to run sln imshow.exe from F:\VS2015\Projects\imshow\x64\Release copy opencv-logo.png there too!
+
+#### OpenCV 2.4.13.6 Windows latest / last (?) w/ 32 bit:
+#Stupid "Win32... Cannot find or open the PDB file." even w/ configured Win32 build
+
+#### OpenCV Ubuntu1604 VM
+source activate tensorflow
+pip install opencv-python #3.4.0.14
+pip install opencv-contrib-python
+
+#### OpenCV #Jetson
+#Env var:
+setx -m OPENCV_DIR31 C:\dl\OpenCV\opencv-3.1.0\build\x64\vc12
+#User Path add:
+%OPENCV_DIR31%\bin
 
 #### OpenCV on raspi according to
 https://www.pyimagesearch.com/2016/04/18/install-guide-raspberry-pi-3-raspbian-jessie-opencv-3/
@@ -1914,12 +2097,23 @@ print(pi.get_servo_pulsewidth(4))
 #RasPi camera access: /dev/vcsm and /dev/vchiq #Sense HAT (for LEDs) at /dev/fb1 (fbOne)
 
 
-#### CSI camera IF Pi #MIPI #CSI Camera Serial Interface 15 pin
+#### CSI camera IF Pi #MIPI #CSI #Camera Serial Interface 15 pin #SLVS-EC
 
-#### AADC 2018 ###Audi
+#### AADC 2018 #AADC # AudiCar #AudiCar #ADTF #ADAS #Elektrobit #EB
+#AudiCar physical
+#BIOS F12 mobo Gigabyte Z170N-WIFI mini-ITX secure boot disabled
+#SSD NVMe Intel
+#AudiCar VM
+#su pw aadc2017 #router Cisco03345 !aUDi732 #MAC 408D5CB4F2F3
+sudo shutdown -P now #shutdown Power-off Linux #shutdown -r now #reboot
+
+#### ARcore #ARcore #XR #MR #Augmented Reality #Mixed Reality
+
+#### Tango #Tango
+#Wild Wild Race Game #Hot Wheels Track Builder
+
 #### gazebosim.org install:
 curl -ssL http://get.gazebosim.org | sh
-
 
 #### sunfounder.com
 git clone https://github.com/sunfounder/Sunfounder_Smart_Video_Car_Kit_for_RaspberryPi.git
@@ -1984,7 +2178,7 @@ python lane_detect.py
 #PWM-control the LED brightness & hue
 
 
-#### RTAndroid ###Android
+#### RTAndroid #Android RT #realtime #real-time
 https://git.embedded.rwth-aachen.de/rtandroid/downloads/raspberry-pi/
 #hdmi_mode in boot/config.txt; table of modes:
 https://www.raspberrypi.org/documentation/configuration/config-txt.md
@@ -2001,14 +2195,26 @@ adb connect 10.0.0.14
 #renamed to gwiot; default initial p@ssw0rd is now iotNNxxx
 
 #### jetson tx2 named tegra-ubuntu; 5.5-19.76 V, static Ethernet IP 10.0.0.20 on router
-#tightvnc unnecessary (vino vnc installed)
-#Search Your Computer for Desktop Sharing to configure Vino
+#### vnc server unnecessary (#vino #vnc server installed)
+#16.04: Search for Desktop Sharing to configure Vino #18.04 Activities search for Settings > tab Sharing > click Screen Sharing to set as in 16.04
 #and Software dconf to ^F / uncheck require-encryption
-#sudo nano /etc/systemd/system/tightvncserver.service #file doesn´t exist
+#sudo nano /etc/systemd/system/tightvncserver.service #suggested file doesn´t exist
+#ssh (below) for tightvnc login on Jetson not used; does it work? use encrypting vnc instead!?
 #ssh -L 5901:127.0.0.1:5901 -N -f -l username server_ip_address #ssh #tunnel for #vnc
 
-#### jetson ##jetpack 3.2 with L4T R28.2 install 20180318 using Dell Ubuntu 16.04
-#check OS version
+#### jetson ##jetpack 3.2 with L4T R28.2 install 20180318 using Dell Ubuntu 16.04 gu1604
+#gu1604 fucked up by #Jetson ARM #JetPack cross-install BS
+#solution: add [arch=amd64] (,i386??) to all uncommented deb <link> entries sudo nohup gedit /etc/apt/sources.list e.g.
+deb [arch=amd64] http://de.archive.ubuntu.com/ubuntu/ xenial main restricted
+#and in /etc/apt/sources.list.d/docker.list add [arch=amd64]
+deb [arch=amd64] https://apt.dockerproject.org/repo ubuntu-xenial main
+#according to https://askubuntu.com/questions/996103/16-04-update-packages-not-found/996117
+#also see: dpkg --print-architecture #dpkg --print-foreign-architectures #sudo dpkg --remove-architecture arm64
+#sudo dpkg --force-architecture --remove-architecture arm64 #sudo rm -rf /var/lib/apt/lists #sudo apt update
+#also: The following packages have been kept back error with Google Chrome update; solution:
+sudo apt dist-upgrade
+
+#jetson ##jetpack 3.2 with L4T R28.2 install continued - check OS version
 head -n 1 /etc/nv_tegra_release #where R27 (release), Revision: 0.1 == 27.1
 #user nvidia pw nvidia changed to usual; user ubuntu pw ubuntu changed to usual
 mkdir j4t
@@ -2016,7 +2222,7 @@ cd j4t
 ../Downloads/JetPack-L4T-3.2-linux-x64_b196.run
 #20170331 host install only, incl extra CUDA 9.0.252-1 #in addition to /usr/local/cuda-8.0?
 #Install packages VisionWorks, CUDA Toolkit, Compile CUDA samples, TensorRT, OpenCV for Tegra, Multimedia API pack, cuDNN
-#OpenCV install problem; OpenCV found in /usr/bin, include, share; removed w Synaptica Package Manager
+#OpenCV install problem; OpenCV found in /usr/bin, include, share; removed w Synaptic Package Manager
 #after setup right-click on desktop > Open Terminal Window
 #switch from FHD to 1920x1200
 xrandr #to list available resolutions; then
@@ -2025,7 +2231,7 @@ xrandr --output HDMI-0 --mode 1920x1200 --rate 59.95
 #Search your Computer to add gedit, video, music
 #Ubuntu Software: browser
 
-#### VisionWorks Nvidia #OpenVX lib Khronos.org
+#### VisionWorks #Jetson Nvidia #OpenVX lib Khronos.org
 /usr/lib/libvisionworks.so,...
 /usr/share/visionworks/sources/ &cmake/
 /usr/share/doc/libvisionworks
@@ -2034,10 +2240,26 @@ xrandr --output HDMI-0 --mode 1920x1200 --rate 59.95
 #libargus TX1 camera API f MIPI.org CSI Camera Serial Interface to ISPs Image Signal Processors
 #V4L2 Video4Linux2 f USB cameras linuxtv.org
 
+#### VisionWorks #windows
+#edit C:\Program Files\NVIDIA VisionWorks\share\visionworks\sources\config.nmake to contain:
+#C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v8.0\lib\x64 has nppi.lib
+CUDA_DIR = C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v8.0
+OPENCV_DIR = C:\dl\OpenCV\opencv-3.1.0\build\x64\vc12
+OPENCV_VERSION = 3.1.0 #341 #2413
+VISIONWORKS_DIR = C:\Program Files\NVIDIA VisionWorks
+#just for unrelated ref: cmake install not in PATH
+#nmake is in VS tool chain C:\Program Files (x86)\Microsoft Visual Studio\2017\Community
+#compile example: copy C:\Program Files\NVIDIA VisionWorks\share\visionworks\sources\ to f:\visionworks
+#Open VS cmd-line and e.g.
+F:
+cd \visionworks\demos\feature_tracker
+nmake
+#error LNK2001 nvxio in F:\VisionWorks\nvxio\include\NVXIO?
 
 #### sequence analysis and phylogenetics Gundula Povysil 365.062 Fr 6.10. then 10.11. weekly
 #### spyder IDE in Anaconda
 conda upgrade spyder
+conda update -n $ENV_NAME spyder
 #### python tutorial seq
 dl = r'C:\dl' #raw string, else escape: dl = 'C:\\dl'
 'abc'.count('b'); 'abc'.replace('b', 't'); 'abc'.upper(); 'abc'[1:]; 'abc'[-1:] #neg from eos
@@ -2109,7 +2331,9 @@ ren name .name
 #remove git info from dir Linux ##Windows?
 rm -rf .git ##rmdir /S /Q .git #rmdir .git
 
-#### github.io ##ai-bits.github.io ##atom for edit
+#### atom editor for #markdown #md #.md search for atom editor in Ubuntu Software
+
+#### github.io ##ai-bits.github.io #atom for edit
 cd C:\xampp\htdocs\ai-bits.github.io
 git pull
 
