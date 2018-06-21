@@ -1152,9 +1152,10 @@ git config --global user.name "ai-bits"
 git commit README.md -m "car kits part 1"
 git push -u origin master
 
-#### LinuxSetup #LinuxSetup
+#### LinuxSetup.md #LinuxSetup.md
 cd C:\Users\gy\Downloads\LinuxSetup
 git commit LinuxSetup.md -m "20180621"
+git push -u origin master
 
 #### online-bookmarks #xampp #php C:\xampp\htdocs\online-bookmarks
 #after install.php renamed to installRenamedToHideIt.php
