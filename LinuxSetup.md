@@ -44,14 +44,26 @@ sudo sysv-rc-conf -P
 #### Linux commands, other:
 ```bash
 #change Ubuntu env DEFAULT_RUNLEVEL=2 to 5
+#By default Windows assumes local time in RTC, Linux assumes UTC
+timedatectl set-local-rtc 1 --adjust-system-clock #change Linux to local time
+timedatectl #to check settings #timedatectl set-local-rtc 0 #for Linux default
 sudo nohup gedit & /etc/init/rc-sysinit.conf
-sudo /usr/bin/nautilus #Ubuntu filer
+sudo nohup nautilus #Ubuntu filer
 sudo su #root console
 echo $0 #returns used shell
-cd - go home / ~
-pwd = present / current working directory = cwd
-mv "old location" "new location" = move and rename files and dirs, e.g. rename java symlink: cd /usr/bin, sudo mv java javaOld
+cd #home/<user> == ~
+pwd #present / current working directory = cwd
+#move and rename files and dirs, e.g. rename java symlink: cd /usr/bin, sudo mv java javaOld
+mv "old location" "new location"
 /etc/init.d is symlink to rc.d/init.d and the latter contains init.d and rc[0-6].d
+awk -F: '{ print $1 }' /etc/passwd
+cat /etc/group #or #groups
+sudo groupdel <group> #delete group
+sudo update-initramfs -u
+sudo apt install nmap #e.g. #nmap localhost #nmap 192.168.2.16 #check open ports
+sudo ufw status #firewall
+
+#list users
 uname -r linux kernel version #ubuntu kernel version #ubuntu version
 dmesg #bootloader messages
 ```
@@ -232,10 +244,6 @@ sudo yum install kernel-headers kernel-devel
 #fedora (18) Software Update
 sudo yum update --skip-broken
 
-#### VMware Tools after unzip into Downloads with Archive Man:
-cd Downloads/vmware-tools-distrib
-sudo ./vmware-install.pl
-
 #/usr/bin/vmware-toolbox-cmd #never used
 
 #### edit selinux
@@ -358,96 +366,50 @@ opt/PostgreSQL/9.1/scripts/launchpgadmin.sh
 User: postgres Password PosNNxxxx Host: localhost Port: 5432
 
 #nohup - run cmd in & in background w/o stopping it by logout
-#start filer on Fedora & Ubuntu
-sudo nohup nautilus &
-#start filer on SuSE
+sudo nohup nautilus & #filer #Nautilus
 
 #ipconfig == ifconfig in Linux (at least Fedora)
 
-Remote Desktop for root
-File /etc/rc.config
+#Remote Desktop for root File /etc/rc.config
 ROOT_LOGIN_REMOTE=yes
 
-On SUSE (KDE) use F5 Shell @ boot screen to boot into console, in Ubuntu
-sudo /etc/init.d/gdm stop
-or
-/sbin/init 3
-or
-^alt backspace (twice)
-to kill GUI and then ^alt F1 for console - in Fedora ^alt F1 for Gnome, ^alt F2 for console!!!
+#boot into console - on SUSE (KDE) use F5 Shell @ boot screen in Ubuntu
+sudo /etc/init.d/gdm stop #or
+/sbin/init 3 #or
+^alt backspace (twice) to kill GUI and then ^alt F1 for console
+^alt F1 for Gnome, ^alt F2 for console in Fedora
 
-shutdown now
-reboot
-reboot -f
+#shutdown now #or #reboot #or #reboot -f
 
-/usr/bin/nvidia-settings
-
-release notes /usr/local/cuda/doc
-
-PATH
-/usr/local/cuda/bin
-
+#nVidia Control Panel #nvidia-settings /usr/bin/nvidia-settings #/usr/local/cuda/doc
+#CUDA PATH /usr/local/cuda/bin
 export PATH=$PATH:/usr/local/cuda/bin
 
-permanent in
-~/.bash_profile
-but as it doesn´t exist in
-~/.bashrc
+#permanent in ~/.bash_profile but as it doesn´t exist in ~/.bashrc
 #modified by root (gy)
 export PATH=$PATH:/usr/local/cuda/bin
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/lib64:/usr/local/cuda/lib
 #export SDK_INSTALL_PATH=$SDK_INSTALL_PATH:/usr/local/cuda/sdk
 export SDK_INSTALL_PATH=$SDK_INSTALL_PATH:~/NVIDIA_GPU_Computing_SDK
 
-LD_LIBRARY_PATH
-for 64-bit
-/usr/local/cuda/lib64:/usr/local/cuda/lib
-
+#LD_LIBRARY_PATH for 64-bit /usr/local/cuda/lib64:/usr/local/cuda/lib
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/lib64:/usr/local/cuda/lib
-
-or add to /etc/ld.so.conf
-for 64-bit
-/usr/local/cuda/lib64
-/usr/local/cuda/lib
-
-and run ldconfig as root
-
+#or add to /etc/ld.so.conf for 64-bit /usr/local/cuda/lib64 /usr/local/cuda/lib and run ldconfig as root
 export SDK_INSTALL_PATH=$SDK_INSTALL_PATH:/usr/local/cuda/sdk
-
-gcc --version
 
 sudo apt-get install freeglut3-dev build-essential libx11-dev libxmu-dev libxi-dev libgl1-mesa-glx libglu1-mesa libglu1-mesa-dev
 
 #### apt
-sudo apt update
-sudo apt upgrade
-sudo apt autoremove
-#fix missing packages
-sudo apt -f install
-#or
 sudo apt-get update
 sudo apt-get upgrade
 sudo apt-get autoremove
 sudo apt-get -f install
 
-yum dasselbe wie apt-get, aber andere Paketnamen
-Fedora 14:
-freeglut 2-3 packets
-build-essential ?
-libx11-dev installed?
-libxmu-dev runtime installed, changed to / added dev pack
-libxi-dev same
-libgl1-mesa = Mesa libGL ok
-libglu1-mesa = Mesa libGLU
-libglu1-mesa-dev contained in other Mesa?
+#yum dasselbe wie apt-get, aber andere Paketnamen; Fedora 14: freeglut 2-3 packets
+#build-essential ? libx11-dev installed? libxmu-dev runtime installed, changed to / added dev pack
+libxi-dev same libgl1-mesa = Mesa libGL ok libglu1-mesa = Mesa libGLU libglu1-mesa-dev contained in other Mesa?
 
-nVidia Control Panel
-/usr/bin/nvidia-settings
-
-result:
-/usr/local/cuda/sdk/C/bin/linux/release/
-
-JRE x as default
+#JRE x as default
 http://www.64bitjungle.com/ubuntu/install-java-jre-160-update-x-on-hardy-as-the-default-java-runtime/
 chmod 755 /opt/java/32/jre-6u16-linux-i586.bin
 chmod 755 /opt/java/64/jre-6u16-linux-x64.bin
@@ -558,9 +520,6 @@ cd /opt/lampp/htdocs
 sudo mv /home/gy/prestashop prestashop
 chmod -R 777 prestashop
 #should be dir / files 775 / 664 afterward installation (configuration), but didn´t work here - blank browser pages
-
-#.bash_profile or .bashrc
-export DT_HOME=/opt/dynatrace-5.5.0
 
 #Java Control Panel for Java path in Fedora in Apps > Other Java
 #Fedora 16-32 after Oracle JDK 1.7 RPM install w/o jre/bin portion
@@ -698,39 +657,20 @@ sudo smbpasswd -a nvidia
 #client nautilus: smb://10.0.0.20 Downloads is sambashare
 
 #### /etc/sudoers explanation
-username ALL=NOPASSWD:/path/to/command
-username ALL=(ALL) NOPASSWD:/path/to/command
-username ALL=(ALL:ALL) NOPASSWD:/path/to/command
+username ALL=NOPASSWD:/path/to/command #run as root but can't use -u and -g to run as any other user or group
+username ALL=(ALL) NOPASSWD:/path/to/command #run cmd as root or use -u to run as any other user
+username ALL=(ALL:ALL) NOPASSWD:/path/to/command #run as root or use -u or -g to run as any other user or group
+username host=(user:group) tag:commands #ALL and not host is a good choice
+#specify user (group) to use -u (-g) option w/ cmd
+#w/o (user:group) cmd can only be run as root
 
-username host=(user:group) tag:commands
-
-host specifies the host names this line is valid for. Unless you are sharing asudoers file among different hosts that need different rules using the special value ALL meaning "all hosts" is a good choice.
-
-user specifies which users you can use with the -u options to run the command. If you omit this you can't use the -u option.
-
-group specifies which groups you can use with the -g options. If you omit it you can't use the -g option.
-
-Both user and group understand the special value ALL as "all users/groups"
-
-If you omit the whole (user:group) thing you can't use -u and -g but only run the command as root.
-
-tag lets you specify some options, like NOPASSWD: ALL
-
-With example 1 you can run the command as root but can't use -u and -g to run it as any other user or group.
-
-With example 2 you can run the command as root or use -u to run it as any other user.
-
-With 3 you can run the command as root or use -u or -g to run the command as any other user or group.
-
-#### Updates
+#### rpm #yum
 yum list updates
 yum list installed
 rpm -qa | grep httpd*
 yum list extras
 yum whatprovides /etc/passwd
 
-#### Ubuntu 14.10 host name osboxes when bridged (not NAT) 172.16.110.50
-user osboxes.org pw osboxes.org
 #### Ubuntu1604
 sudo apt update
 sudo apt upgrade
@@ -747,6 +687,27 @@ gnome-system-monitor #task manager #shift^Esc doesn work, but good to know app
 sudo add-apt-repository ppa:yannubuntu/boot-repair
 sudo apt-get update
 sudo apt-get install -y boot-repair && boot-repair
+
+#### GRUB #grub #Stupid comment after Kernel compile:
+#Setting GRUB_TIMEOUT to a non-zero value when GRUB_HIDDEN_TIMEOUT is set is no longer supported
+/etc/default/grub #"run 'update-grub' afterwards to update /boot/grub/grub.cfg"
+sudo update-grub  #stub for running
+grub-mkconfig -o /boot/grub/grub.cfg #to generate a grub2 config file
+#Ubuntu 18.04 on Dell USB128#2: commented out several IFs around timeout=30 in grub.cfg directly
+#grub.cfg changes naturally gone with next Kernel update
+#AADC2018 64 GB boot repair
+#grub rescue>
+set prefix=(hd0,msdos1)/boot/grub
+set root=(hd0,msdos1)
+insmod normal
+normal #AADC2018 boots
+sudo -i #exit #to change to normal user
+grub-install --root-directory=/mnt/ /dev/sdb #nvme0n1p1 #error on AADC2017 NVMe
+sudo update-grub
+sudo grub-install /dev/sdb
+
+#### Recovery Mode #Recovery Mode #Boot Repair #Wiederherstellungskonsole
+Advanced Options > Recovery > dpkg Repair #for Nvidia driver 396
 
 #remove openJDK
 sudo apt-get purge openjdk-\*
@@ -852,26 +813,62 @@ C:/Users/cwat-ghuber/.gradle/wrapper/dists/gradle-2.4-all/3i2gobhdl0fm2tosnn15g5
 #cd C:\Users\cwat-ghuber\AndroidStudioProjects\ATest3
 #gradlew build
 
-#### AVD #AVD #Android Virtual Device #Emulator #Android Emulator
+#### AVD #AVD #Android Virtual Device #### Emulator #Emulator #Android Emulator
 C:\Users\gy\.android\avd #AVD #Android Virtual Device definitions
 #quick boot switch AVD Manager > Advanced > Emulated Performance > Cold boot #tower
 #C:\workspaces\sdks\android\tools\bin\avdmanager.bat #AVD Manager command line tool
 avdmanager list target #Android images
 #emulator CMDs #AVD CMDs
-C:\workspaces\sdks\android\emulator\emulator @Pixel_2_API_P -camera-front webcam0
+cd C:\workspaces\sdks\android\emulator\
+emulator -version #27.2.9.0 camera problem
+emulator @Pixel_2_API_P -camera-front webcam0
 emulator -list-avds
 adb emu screenrecord start --time-limit 10 [path to save video]/sample_video.webm | .GIF
 adb emu screenrecord screenshot [destination-directory]
 
-#### hellosceneform normal install: "Cannot create AR..."
-#adb says ARcore is installed but it isn´t visible in apps
+#### ARcore #ARcore #XR #MR #### Augmented Reality #Augmented Reality #Mixed Reality
+#### hellosceneform #C:\workspaces\sdks\sceneform-android-sdk-1.0.0 #arcore-android-sdk-1.2.0
+#normal install: "Cannot create AR..."
+#### adb #adb says ARcore is installed but it isn´t visible in apps
 cd C:\workspaces\sdks\android\platform-tools
 #consequence: install ARcore on virgin AVD w/o hellosceneform and it appears in apps:
 adb install com.google.ar.core_1.2.180425099_x86.apk
 
+#### hellosceneform git #sceneform-android-sdk #arcore-android-sdk
+cd C:\workspaces\sdks
+git clone https://github.com/google-ar/arcore-android-sdk.git
+git clone https://github.com/google-ar/sceneform-android-sdk.git
+#Windows: C:\workspaces\sdks\android\platform-tools\adb logcat #^F eglMakeCurrent
+#Linux: adb logcat | grep eglMakeCurrent #check if OpenGL ES 3.1 is used in emulator
+#works on S9
+#emulator - install ARCore emulator apk from https://github.com/google-ar/arcore-android-sdk/releases
+C:\workspaces\sdks\android\platform-tools\adb install C:\Users\gy\Downloads\ARCore_1_4_x86_for_emulator.apk
+#set Camera Back to VirtualScene
+#Failed to create AR session #Hello Sceneform keeps stopping
+
+#### virtual4real #parcours #sceneform #hellosceneform
+#Google Sceneform Tools (Beta) plugin for Android Studio File > Settings > Plugins installed
+#Import 3D asset (OBJ, FBX, glTF converted to Sceneform Binary Asset) into AS > Project window > app > sampledata > models
+#in C:\workspaces\sdks\sceneform-android-sdk\hellosceneform\app\sampledata\models
+#### Blender #Blender 2.79
+#Scale default cube z (height) 0.01
+#Export as FBX and copy it into AS C:\workspaces\sdks\sceneform-android-sdk\hellosceneform\app\sampledata\models
+#AS > right-click track.fbx > Import Sceneform Asset .sfb Output Path: #C:\workspaces\sdks\sceneform-android-sdk\hellosceneform\app\src\main\res\raw
+#shown as relative path src\main\res\raw\track.sfb
+
+#### Tango #Tango
+#Wild Wild Race Game #Hot Wheels Track Builder
+
 #### VMware change boot order,... in .vmx file to force BIOS or delay boot 10 sec for F2 into BIOS
 bios.forceSetupOnce = "TRUE"
 bios.bootDelay = "10000"
+
+#### VirtualBox Ubuntu 16.04.4 on gqu16044 #Oracle
+#add to /etc/apt/sources.list or Software & Updates >
+deb https://download.virtualbox.org/virtualbox/debian xenial contrib
+sudo apt update
+sudo apt-get install virtualbox vde2 virtualbox-guest-additions-iso
+wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | sudo apt-key add -
 
 ####  Windows 8.3 8dot3 filenames disabled by default on 8.1
 fsutil 8dot3name query c:
@@ -903,31 +900,60 @@ adb shell “am start -a android.bluetooth.adapter.action.REQUEST_DISCOVERABLE�
 #app force-quit: long-press side-button (shutdown,...) long-press crown
 
 #### TightVNC leave full screen ^-alt-shift-f or ^esc; Remmina RD Client Ubuntu right-^f
-#Search Your Computer for Desktop Sharing to configure Vino
-#### Ubuntu enable #VNC w/o encryption; gconf-editor built-in (Configuration Editor):
-#TightVNC: no matching security type
-sudo apt-get install dconf-tools
+#### Vino on Ubuntu Unity: "Search Your Computer" (left top icon) for Desktop Sharing for basic Vino config
+#enable #Vino w/o encryption #TightVNC error: no matching security type
+sudo apt-get install dconf-tools #?gconf-editor built-in (Configuration Editor)
 #Ubuntu 16.04 software > search dconf > install
-#search for require-encryption (is in org->gnome->desktop->remote-access)
+#search for require-encryption (is in org > gnome > desktop > remote-access)
+#uncheck prompt-enabled, uncheck require-encryption
+#or:
+gsettings set org.gnome.Vino require-encryption false
+gsettings set org.gnome.Vino prompt-enabled false
+gsettings set org.gnome.Vino authentication-methods "['vnc']"
+gsettings set org.gnome.Vino vnc-password "$(echo -n "vncNNxxx" | base64)"
 ps ax | grep vino #just in case: check if vino #vnc-server is running
 
-#### Ubuntu post-install steps #ubuntu -post-install
+#### VNC-server #VNC-server #DO NOT INSTALL #Vino on #Raspbian #RaspberryPi
+#Menu > Preferences > RaspberryPi Configuration > Interfaces tab > VNC Enable
+#click VNC on taskbar > in window click burger menu > Options
+#vertical tabs: Security > Authentication > VNC password; Users & Permissions > Password
+#DO NOT INSTALL vino according to https://elinux.org/RPi_VNC_Screen_Sharing
+#sudo apt-get install vino dconf-editor #vino #dconf-editor, not dconf-tools
+#END DO NOT INSTALL ON RASPBIAN
+
+#### gnome-shell --version
+
+#### Ubuntu installations:
+#gu1604 128 GB stick 1 CUDA 9.0
+#gu1804 128 GB stick 2 CUDA 9.2
+#gnub1604 64 GB stick CUDA 9.2 Docker
+#gnub16044 500 GB Samsung CUDA 9.0 TensorFlow 1.9 VMware
+#gnub1804 160 GB PATA
+#gqu1604 320 GB CUDA 9.0 TensorFlow
+#gqu16044 750 GB Tosh CUDA 9.2 Docker VirtualBox
+
+#nvidia-tegra user nvidia pw usual JetPack 3.2
+
+#### Ubuntu #18.04 #Gnome post-install steps #ubuntu post-install
 ##Activities > Type to find, Start and Pin to Favs each:
 #Settings, then Sharing > Activate and Require a Pw
 #dconf settings > ^F require-encryption
-#install #Remina or #Remote Desktop #Vinagre for #Gnome leave Viagre through mouse at top edge
+#install #Remmina or #Remote Desktop #Vinagre for #Gnome leave Vinagre through mouse at top edge
 #### Google Chrome on Ubuntu
-cd Downloads
 wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 #simply double-click pckg #sudo dpkg -i Downloads/google-chrome-stable_current_amd64.deb
 google-chrome #pin to Favs and del d/l
 #### exFAT on Ubuntu
 sudo apt-get install exfat-fuse exfat-utils
-#access sd card in VMware: VM settings > Hardware tab Add >
- IDE > Use physical disk > Use entire (> rename vmdk? none for physical
+#access #sd card #sd-card in VMware: VM settings > Hardware tab Add >
+ Hard Disk > IDE > Use physical disk > Use entire (> rename vmdk? none for physical)
+#### NTFS on Ubuntu should mount, but u can
+sudo apt install ntfs-config #dependes on ntfs-3g driver
+#### samba #smb://g10 hot domain hotmail.com #Filer Go menu > Open location
+sudo apt-get install samba samba-common-bin
 ##GPU-install
-#dpkg -i installed CUDA removal: Synaptic > Status button left bottom > Installed (local or obsolete vertical tab)
-##CUDA Ubuntu install according to:
+#dpkg -i installed CUDA removal: #Synaptic > Status button left bottom > Installed (local or obsolete vertical tab)
+##CUDA 9.0 Ubuntu install according to:
 https://developer.nvidia.com/cuda-90-download-archive?target_os=Linux&target_arch=x86_64&target_distro=Ubuntu&target_version=1704&target_type=deblocal
 sudo apt-key add /var/cuda-repo-9-0-local/7fa2af80.pub
 sudo dpkg -i cuda-repo-ubuntu1704-9-0-local_9.0.176-1_amd64.deb
@@ -939,11 +965,14 @@ https://docs.nvidia.com/deeplearning/sdk/cudnn-install/index.html
 sudo dpkg -i <cuDNNruntime>
 sudo dpkg -i <cuDNNdev> #dependent on runtime
 sudo dpkg -i <cuDNNdoc>
-bash Downloads/Anaconda3-5.2.0-Linux-x86_64.sh #close terminal and open new one #Anaconda3
+bash Downloads/Anaconda3-5.2.0-Linux-x86_64.sh #close terminal and open new one #Anaconda3 #### Anaconda install
 conda create -n tfgpu python=3.6
 source activate tfgpu
 pip install --ignore-installed --upgrade tensorflow-gpu
 conda install jupyter
+#https://git-scm.com/ d/l
+#atom editor .md https://atom.io/ d/l, dpkg, update, install
+#kvm quemu
 sudo apt-get install qemu-kvm libvirt-bin virt-manager #for #Android Studio #AVDs
 #then add Virtual Machine Manager to Launch
 #Android Studio: d/l, unzip to ~, cd android-studio/bin, ./studio.sh
@@ -954,12 +983,11 @@ sudo apt-get install qemu-kvm libvirt-bin virt-manager #for #Android Studio #AVD
 lshw -numeric -C display #lists adapters
 #https://www.reddit.com/r/Ubuntu/comments/7eb015/hp_omen_accelerator_egpu_works_on_ubuntu_1710/
 https://github.com/intel/thunderbolt-software-user-space #for device approval prerequisites:
-sudo apt-get install cmake libboost-filesystem-dev txt2tags pkg-config
-#thunderbolt-software-user-space-master.zip d/l and unzip to ~
+#### Thunderbolt #thunderbolt-software-user-space-master.zip d/l and unzip to ~
 cd /home/gy/thunderbolt-software-user-space-master
 mkdir build
-https://developer.nvidia.com/cuda-90-download-archive?target_os=Linux&target_arch=x86_64&target_distro=Ubuntu&target_version=1704&target_type=deblocal
 cd build
+sudo apt-get install cmake libboost-filesystem-dev txt2tags pkg-config
 cmake .. -DCMAKE_BUILD_TYPE=Release
 cmake --build . #incl trailing period!
 #Built target /usr/local/bin/tbtadm
@@ -968,13 +996,123 @@ sudo cmake --build . --target install
 tbtadm devices
 tbtadm topology
 sudo tbtadm add 0-1 #Added to ACL
+#https://developer.nvidia.com/cuda-90-download-archive?target_os=Linux&target_arch=x86_64&target_distro=Ubuntu&target_version=1704&target_type=deblocal
 https://websiteforstudents.com/install-proprietary-nvidia-gpu-drivers-on-ubuntu-16-04-17-10-18-04/
 sudo add-apt-repository ppa:graphics-drivers/ppa
 sudo apt update
+#https://askubuntu.com/questions/1032938/trying-to-install-nvidia-driver-for-ubuntu-desktop-18-04-lts
+#sudo apt install nvidia-kernel-source-396 #one suggestion in above link
 #check for latest Nvidia driver, but do not download and supply the major version to below cmd:
-sudo apt install nvidia-390 #reboot
+sudo apt install nvidia-396 #reboot #396 listed in update as of 20180812 #390 listed on drivers page #left 384 on AADC2018 64 GB maybe somehow related to installed CUDA
+#or #sudo apt purge nvidia-390 and #sudo apt install nvidia-driver-396
+#sudo apt install vulkan #different suggestion: #sudo apt install libvulkan1
 #nvidia-smi #?nvidia card information? #/etc/X11/xorg.conf #?
+#### eGPU #eGPU with 16.04.4 Kernel 4.13 CUDA 9.2 incl driver 396.26 and instructions on d/l page
+#/etc/X11/xorg.conf on gnub16044; copy on G10 C:\Users\gy\Downloads\LinuxSetup
+Option "AllowExternalGpus" "true" #added as last line in Section "Device" (and Section "Screen")
+#bbswitch https://github.com/Bumblebee-Project/bbswitch (bbswitch-dkms?) Disable discrete Nvidia graphics on Optimus laptops; seems very obscure and dangerous
+#depmod https://wiki.debian.org/depmod (modprobe, nvidia-modprobe) #DKMS #nvidia-prime?
 #eGPU #post-installation-end
+
+#### Ubuntu 17.10 on #64 GB USB on #NUC w/ #eGPU #CUDA 9.2
+#hangs w/ eGPU message: started gnome display manager and dealing with any system changes
+#starts w/o eGPU but freezes mouse after login; solutions:
+#1 below pw entry in cogwheel switch from Ubuntu (=Wayland) to Ubuntu on Xorg
+#2 uncomment #WaylandEnable=false in /etc/gdm3/custom.conf just removes "Ubuntu"-entry in cogwheel so use #1
+
+#### Ubuntu 18.04 on #128 GB USB #CUDA 9.2
+#Software & Updates > Additional Drivers > Nvidia 390
+sudo dpkg -i cuda-repo-ubuntu1710-9-2-local_9.2.88-1_amd64.deb
+sudo apt update
+sudo apt install cuda #installs driver 396.28 and trashes Ubuntu
+#Boot Manager > Advanced > Repair > dpkg Repair brings it back w/ 396.28
+lspci -k | grep -EA2 'VGA|3D' #to show graphics controllers
+xrandr #lists screen resolutions and refresh
+/etc/modprobe.d/blacklist.conf #and other blacklisted items
+/etc/modprobe.d/nvidia-graphics-drivers.conf #symbolic link to nvidia blacklist e.g. nouveau
+/etc/alternatives/x86_64-linux-gnu_xorg_extra_modules #symbolic link target
+dmesg | grep nvidia #lists boot messages
+#questionable commands:
+sudo apt purge nvidia-390
+sudo apt install nvidia-kernel-source-396
+sudo apt install nvidia-driver-396
+#questionable commands end
+sudo dpkg -i cuda-repo-ubuntu1710-9-2-local-cublas-update-1_1.0-1_amd64.deb
+https://docs.nvidia.com/deeplearning/sdk/cudnn-install/index.html
+#cuDNN 7.1 for #CUDA 9.2; + in file name is nonsense
+sudo dpkg -i Downloads/libcudnn7_7.1.4.18-1+cuda9.2_amd64.deb
+sudo dpkg -i Downloads/libcudnn7-dev_7.1.4.18-1+cuda9.2_amd64.deb
+sudo dpkg -i Downloads/libcudnn7-doc_7.1.4.18-1+cuda9.2_amd64.deb
+#NO sudo apt install cudnn!
+#cuDNN install verification
+cp -r /usr/src/cudnn_samples_v7/ $HOME
+cd  $HOME/cudnn_samples_v7/mnistCUDNN
+make clean && make
+./mnistCUDNN
+#Anaconda3
+bash Downloads/Anaconda3-5.2.0-Linux-x86_64.sh
+#not done http://www.python36.com/how-to-install-tensorflow-gpu-with-cuda-9-2-for-python-on-ubuntu/
+
+#### nvidia-docker2 #nvidia-docker2
+#### NGC #NGC #Nvidia GPU Cloud only on > GTX 9-series CUDA capability >= 5.2 https://devblogs.nvidia.com/gpu-containers-runtime/
+#docker-ce #remove old docker implementations
+sudo apt-get remove docker docker-engine docker.io
+https://docs.docker.com/install/linux/docker-ce/ubuntu/
+#multi-step: repo over HTTPS, GPG, on gu16044 from .deb, not add-apt; update, install -ce
+#docker-ce download .deb - check for nvidia-docker2- and nvidia-container-runtime-compatible docker version first
+https://download.docker.com/linux/ubuntu/dists/xenial/pool/stable/amd64/
+sudo adduser $USER docker
+newgrp docker
+https://github.com/NVIDIA/nvidia-docker https://nvidia.github.io/nvidia-container-runtime/
+curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add -
+distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
+curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+sudo apt-get update
+sudo apt-get install -y nvidia-docker2 nvidia-container-runtime
+sudo pkill -SIGHUP dockerd
+#Docker Engine setup to register the nvidia runtime
+https://github.com/nvidia/nvidia-container-runtime #see Installation after Usage Example
+#use the below instead if not already installed as on gqu16044?
+https://unix.stackexchange.com/questions/451667/cant-install-nvidia-docker2-on-bionic-ubuntu-18-04-lts/452583#452583
+#check for nvidia-docker2- and nvidia-container-runtime-compatible docker version:
+apt-cache madison nvidia-docker2 nvidia-container-runtime
+#pin nvidia-docker2=<v>+docker<v> nvidia-container-runtime=<v>+docker<v> see:
+https://github.com/NVIDIA/nvidia-docker/wiki/Frequently-Asked-Questions#how-do-i-install-20-if-im-not-using-the-latest-docker-version e.g. on GNUB1804 (also works on GQU1604 with 18.03.1 (no -1)):
+sudo apt-get install -y nvidia-docker2=2.0.3+docker18.03.1-1 nvidia-container-runtime=2.0.0+docker18.03.1-1
+https://github.com/nvidia/nvidia-container-runtime #continued after nvidia-container-runtime install
+#Not used: Systemd drop-in file /etc/systemd/system/docker.service.d/override.conf throws error at Docker restart - renamed to disable
+#Used: Daemon configuration file /etc/docker/daemon.json #only visible to su! renamed on gu16044 to disable
+#Is it necessary if "--runtime=nvidia" argument?!
+docker run --runtime=nvidia --rm nvidia/cuda nvidia-smi #returns GPU data; over 1 GB image!!
+https://devblogs.nvidia.com/gpu-containers-runtime/
+#sudo nvidia-container-cli --load-kmods info #returns GPU data too; no additional footprint!!
+https://ngc.nvidia.com #NGC #Nvidia GPU Cloud https://ngc.nvidia.com/configuration/api-key
+#NGC API Key - generated and stored in NvidiaDockerAPIKey.txt
+docker login nvcr.io
+Username: $oauthtoken
+Password: <paste key>
+#pytorch example https://devblogs.nvidia.com/gpu-containers-runtime/
+#removed sudo and -e NVIDIA_VISIBLE_DEVICES=0,1 and used latest image
+docker run -it --runtime=nvidia --shm-size=1g --rm nvcr.io/nvidia/pytorch:18.06-py3
+#renders a console / terminal / login: root@7e866936cc5f:/workspace#
+nvidia-smi #show GPU
+cd examples/mnist
+python main.py #takes a minute for 10 epochs on 1070 Ti
+exit #or: docker stop <containerID> #from other terminal
+#pytorch a la https://ngc.nvidia.com/registry/nvidia-pytorch
+nvidia-docker run -it --rm -v <local_dir>:<container_dir> nvcr.io/nvidia/pytorch:18.06-py3
+#explanation for -v <local_dir>:<container_dir>:
+https://docs.nvidia.com/deeplearning/dgx/pytorch-release-notes/running.html results in:
+nvidia-docker run --ipc=host -it --rm -v /home/gy/ngc/pytorch/data/mnist:/data/mnist nvcr.io/nvidia/pytorch:18.06-py3
+#in short: /home/gy/ngc/pytorch/data/mnist local absolute path maps to /data/mnist in container
+#volume and mount flags generically see https://docs.docker.com/storage/volumes/
+#-v --volume solely managed and modified by Docker in /var/lib/docker/volumes/ on Linux
+#--mount anywhere on the host system
+#tmpfs mounts are in RAM only
+#missing in docs: above also needs --ipc=host for appropriate memory (otherwise only 64 MB)
+https://ngc.nvidia.com/registry/nvidia-tensorflow
+docker pull nvcr.io/nvidia/tensorflow:18.06-py3 #Windows not supported
+nvidia-docker run --shm-size=1g --ulimit memlock=-1 -it --rm -v /home/gy/ngc/tensorflow/data/mnist:/data/mnist nvcr.io/nvidia/tensorflow:18.06-py3
 
 #### gparted partitioning
 sudo apt-get install gparted
@@ -1060,7 +1198,7 @@ sudo nohup gedit /lib/systemd/system/docker.service
 sudo apt-get autoremove
 rm -rf /var/lib/docker
 ****************
-#### docker commands:
+#### docker commands #docker commands:
 docker info
 #Commit your container (diff to orig) to a new named image
 docker commit <container> <some_name>
@@ -1155,7 +1293,7 @@ git push -u origin master
 #### LinuxSetup.md #LinuxSetup.md
 cd C:\Users\gy\Downloads\LinuxSetup
 git commit LinuxSetup.md -m "20180621"
-git push -u origin master
+git push -u origin master #username ai-bits
 
 #### online-bookmarks #xampp #php C:\xampp\htdocs\online-bookmarks
 #after install.php renamed to installRenamedToHideIt.php
@@ -1276,16 +1414,16 @@ sudo apt install git
 #better not install to pwd (with period at the command end) but to ud120-projects
 git clone https://github.com/udacity/ud120-projects.git
 
-#### CUDA Ubuntu 8.0 Debian package
+#### CUDA 8.0 Ubuntu Debian package
 sudo dpkg --install cuda-repo-ubuntu1604-8-0-local-ga2_8.0.61-1_amd64.deb
 sudo apt-get update
 sudo apt-get install cuda
 
-#### CUDA Windows 9.0
+#### CUDA 9.0 Windows
 #cuDNN for CUDA 9.0 - items copied to respective directories
 https://developer.nvidia.com/rdp/cudnn-download
 
-#### CUDA Ubuntu 9.1 Debian package
+#### CUDA 9.1 Ubuntu Debian package
 https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html #ubuntu-installation
 sudo dpkg -i Downloads/cuda-repo-ubuntu1604-9-1-local_9.1.85-1_amd64.deb
 #sudo apt-key add /var/cuda-repo-<version>/7fa2af80.pub #translates to:
@@ -1296,9 +1434,9 @@ sudo apt update
 sudo apt install cuda
 #### version management
 sudo apt autoremove #removed CUDA 8
-#### version management alternative
+#### Synaptic Package Manager #synaptic version management alternative
 sudo apt install synaptic
-#### to (completely) remove: Synaptic Package Manager > Installed (local or obsolete)
+#### to (completely) remove: Synaptic > Installed (local or obsolete)
 #### to (completely) remove in console:
 sudo apt-get remove --purge nvidia*
 sudo apt-get autoremove
@@ -1309,6 +1447,17 @@ export CUDA_HOME=/usr/local/cuda
 #according to Nvidia CUDA docs
 export PATH=/usr/local/cuda-8.0/bin${PATH:+:${PATH}}
 
+#### CUDA 9.2 .run for Ubuntu 16.04
+sudo sh Downloads/cuda_9.2.148_396.37_linux.run #asks for driver install and CUDA, sample, openGL locations,
+#but fails because of XServer running
+
+#### CUDA 9.2 .deb for Ubuntu 16.04 gnub16044
+sudo apt remove cuda #says not installed thou 9.2 installed and driver 396 in Software & Updates > Additional Drivers
+sudo apt autoremove
+sudo dpkg -i Downloads/cuda-repo-ubuntu1604-9-2-local_9.2.148-1_amd64.deb
+sudo apt-key add /var/cuda-repo-<version>/7fa2af80.pub
+sudo apt-get update
+sudo apt-get install cuda
 
 #### TensorFlow
 #check TensorFlow version tf version:
@@ -1333,7 +1482,7 @@ conda install jupyter
 conda install matplotlib #installs numpy, intel-openmp, mkl
 conda install scipy #installs numpy too
 conda install scikit-learn
-pip install keras #as conda wants dependency TF 1.1.0!
+#pip install keras #as conda wants dependency TF 1.1.0! #should be in tf.keras already
 #python versions, depending on env set
 pip list
 
@@ -1355,7 +1504,7 @@ export CUDA_HOME=/usr/local/cuda
 #### download and install Anaconda 4.2.0 64 bit Python 3.5
 https://www.continuum.io/downloads
 bash Downloads/Anaconda3-4.2.0-Linux-x86_64.sh
-#install location ~/Anaconda3 prepended to PATH in /home/gy/.bashrc
+#install location ~/Anaconda3 prepended to PATH in ~/.bashrc
 #Create a conda environment called tensorflow w specific python -V
 conda create -n tensorflow python=3.5
 source activate tensorflow
@@ -1578,9 +1727,11 @@ conda install --channel https://conda.anaconda.org/conda-forge imageio
 #### keras Francois Chollet
 source activate tensorflow
 #Keras 2.1.1
-pip install keras
+#pip install keras #should be in tf.keras already
 #Keras reinforcement learning Keras downgraded to 2.0.6
 pip install keras-rl
+#### autoKeras #autoKeras https://github.com/jhfjhfj1/autokeras
+pip install autokeras #autoML for Keras #automated machine learning
 
 #### TensorFlow git repo on gu1604 128 GB USB
 cd #to clone to ~/tensorflow
@@ -1689,16 +1840,71 @@ install.bat -AnacondaBasePath c:\dl\Anaconda3
 #set path for cntk
 C:\dl\cntk\scripts\cntkpy35.bat
 
-#### Python
-#debug
-python -m pdb script.py
+#### Python3 Ubuntu distribution install (not Anaconda3)
+#python3 -m argument = module-name
+#pip install --user ... #to prevent breaking any system-wide packages, but virtualenv needed anyway
+python3 -m pdb script.py #python debug
+python3 -v #executes python verbosely (shows imports details, versions, actions)
+#check module:
+python3
+#>import inspect
+#>inspect.getfile(inspect)
+#>inspect.getfile(tensorflow) #error
+#>import tensorflow
+#>inspect.getfile(tensorflow) #/usr/local/lib/python3.5/dist-packages/tensorflow/__init__.py
 
-#### Python Virtualenv
+#### tf_trt_models #tf_trt_models virtualenv current install per 20180720
+#modified https://github.com/NVIDIA-Jetson/tf_trt_models install
 #see http://docs.python-guide.org/en/latest/dev/virtualenvs/
-#creates a copy of python executables in neon/.venv
-. .venv/bin/activate #activates .venv2
-#versions, depending on env set
-pip list
+#less sudo but --user for ~/.local/bin install and not /usr/bin
+#also see #sudo -H
+pip3 install --user virtualenv
+mkdir python3
+cd python3
+virtualenv tensor #Using base prefix '/usr'
+#New python executable in /home/nvidia/python3/tensor/bin/python3
+#Also creating executable in /home/nvidia/python3/tensor/bin/python
+#Installing setuptools, pip, wheel...done.
+source ~/python3/tensor/bin/activate #virtualenv tensor
+pip3 install numpy matplotlib
+sudo apt install libjpeg-dev #prereq for pillow (more or less formerly PIL)
+pip3 install pillow
+pip3 install ~/Downloads/tensorflow-1.8.0-cp35-cp35m-linux_aarch64.whl
+pip3 install jupyter
+cd ~/tf
+git clone --recursive https://github.com/NVIDIA-Jetson/tf_trt_models.git
+cd tf_trt_models
+./install.sh python3
+##tf_trt_models example
+sudo nvpmodel -m 0 #switch Jetson to MAX-N mode
+sudo ~/jetson_clocks.sh
+source ~/python3/tensor/bin/activate
+http://localhost:8888/notebooks/tf/tf_trt_models/examples/classification/classificationMy3.ipynb
+
+#### tf_trt_models mostly sudo-install - deleted
+#according to https://github.com/NVIDIA-Jetson/tf_trt_models
+sudo apt-get install libfreetype6-dev pkg-config #prereq matplotlib to avoid error
+sudo apt-get install python3-pip #pip3 already installed?
+sudo apt-get install python3-numpy python3-matplotlib python3-pil #numpy as prerq for matplotlib to avoid error
+https://devtalk.nvidia.com/default/topic/1031300/jetson-tx2/tensorflow-1-8-wheel-with-jetpack-3-2-/
+sudo pip3 install Downloads/tensorflow-1.8.0-cp35-cp35m-linux_aarch64.whl
+mkdir tf
+cd tf
+git clone --recursive https://github.com/NVIDIA-Jetson/tf_trt_models.git
+cd tf/tf_trt_models
+./install.sh python3 #aarch64-linux-gnu-gcc
+https://github.com/jupyter/notebook/issues/636 #zmq and libzmq problems
+sudo apt-get install python-zmq #to avoid error in install jupyter
+#libzmq3 install according to https://gist.github.com/katopz/8b766a5cb0ca96c816658e9407e83d00 helped
+sudo -H pip3 install jupyter
+deactivate
+
+#Nervana #neon venv guesswork / not verified
+#python executables in neon/.venv?
+pip3 install --user pipenv
+pipenv install <module>
+. .venv/bin/activate #activates .venv2 #versions depending on venv set
+pip3 list
 
 #### anaconda ###python
 #continuum.io
@@ -1933,16 +2139,19 @@ glxinfo #lists driver details, but only Nvidia
 #gedit /etc/X11/xorg.conf
 #lists both adapters with details:
 sudo lshw -C video
+#kernel upgrade #HWE #HardWare Enablement like 16.04.4 distro w/ kernel 4.13
+sudo apt-get install linux-generic-hwe-16.04
 
 #### Ubuntu 16.04 #nvidia driver on tower
 #sudo add-apt-repository ppa:graphics-drivers/ppa #?? didn´t do it
 #Ubuntu Suchen (top left) nvidia brings up Nvidia X Server Settings when driver is installed
 #sudo apt-get purge nvidia* #to comletely remove
 
-#### USB camera on Tower Ubuntu1604
-lsusb #Bus 002 Device 003: ID 1908:2311 GEMBIRD
+#### USB camera #webcam #UVC-Webcam Universal Video Class
+lsusb #GEMBIRD on Tower: Bus 002 Device 003: ID 1908:2311 GEMBIRD
+#Dell XPS 9550: Sunplus Innovation Technology Inc: Bus 001 Device 004: ID 1bcf:2b95
+sudo lsusb -v #verbose
 dmesg #system msgs...: usb 2-2: Product: USB2.0 PC CAMERA
-
 
 
 #### windows 10 Windows-Subsystem für Linux WSL file system location
@@ -1958,11 +2167,12 @@ C:\Users\gy\AppData\Local\lxss\root
 C:\Users\gy\AppData\Local\lxss\rootfs\root
 
 #### raspberry ###pi ##raspbian debian 8 jessie w pixel desktop WLAN 10.0.0.8
-cat /etc/os-release #raspbian version
+cat /etc/os-release #raspbian version installed on #SDXC SanDisk Extreme 64 GB
 #### Raspbian Pixel standard user: pi (not gy) pw usual Linux
 sudo apt-get update
 sudo apt-get dist-upgrade
 sudo apt-get autoremove #NOT clean as suggested in raspberrypi.org
+#?sudo raspi-config > Interfaces > VNC > enable
 sudo apt-get install samba samba-common-bin #smb://g10 hot domain hotmail.com
 sudo nano /etc/samba/smb.conf #share Downloads folder:
 [PiShare]
@@ -2100,18 +2310,67 @@ print(pi.get_servo_pulsewidth(4))
 
 #### CSI camera IF Pi #MIPI #CSI #Camera Serial Interface 15 pin #SLVS-EC
 
-#### AADC 2018 #AADC # AudiCar #AudiCar #ADTF #ADAS #Elektrobit #EB
+#### AADC 2018 #AADC 2018 #AADC2018 # AudiCar #AudiCar info@audi-autonomous-driving-cup.com
 #AudiCar physical
-#BIOS F12 mobo Gigabyte Z170N-WIFI mini-ITX secure boot disabled
+#BIOS F12 mobo Gigabyte Z170N-WIFI mini-ITX 170x170 6.7x6.7 secure boot disabled (ATX 305x244 12x9.6)
 #SSD NVMe Intel
+#### AudiCar #AudiCar sizes metrics ~/AADC/include/
+#### XFCE #XFCE #Application Finder #dpkg #software #package manager
+#nomachine remote desktop menu ^alt+0
+#user aadc pw aadc201Y 2017: Annika 192.168.2.16; 2018: Bob .17 Charlie .18
+#teamviewer.com teamviewer.com id G10 1019057044 pw 7953 aadc2018 64 GB on Dell 1024934273 pw 2^8
+#gnub16044 1024639116 pw 7476 aadc2017 1236744545 pw 2^8 aadc2018 160er on 2017er 1030831961 pw 2^8
+sudo apt install libqt5x11extras5 qtdeclarative5-controls-plugin qml-module-qtquick-dialogs
+sudo apt-get -f install #for still unmet dependencies
+sudo dpkg -i Downloads/teamviewer_13.1.8286_amd64.deb
+#then Ubuntu Search Your Computer #XUbuntu #XFCE App Finder or install Ubuntu Software Center
+sudo apt-get install software-center
+sudo software-center
+#swapon --all devices marked as swap partition are made available
+sudo swapon -a #NOT done but to the contrary in gparted > select swap partition > Part Swapoff
+
+#AudiCar remote access
+xrandr --fb 1920x1080 #different resolution from monitor in remote access
+
+#Raspberry Pi remote access
+sudo raspi-config > Advanced Options > Resolution #set to FHD on Zero WH 32 GB
+#MAY (?) be the same as GUI menu > Preferences > Raspberry Pi Configuration
+
 #AudiCar VM
 #su pw aadc2017 #router Cisco03345 !aUDi732 #MAC 408D5CB4F2F3
+https://askubuntu.com/questions/954376/removing-default-virtualbox-guest-additions
+dpkg -l | grep virtualbox
+cd /opt/VBoxGuestAdditions-5.2.8/
+sudo ./uninstall.sh
 sudo shutdown -P now #shutdown Power-off Linux #shutdown -r now #reboot
 
-#### ARcore #ARcore #XR #MR #Augmented Reality #Mixed Reality
+#### ADTF 2017 #ADTF 2017 /opt/adtf/2.14.0/ #ADAS #Elektrobit #EB
 
-#### Tango #Tango
-#Wild Wild Race Game #Hot Wheels Track Builder
+#### ADTF 2018 #ADTF 2018 #AudiCar 2018 CloneZilla image /opt/ADTF/3.3.1
+git clone https://git.digitalwerk.net/aadc/adtf-basic-software
+#rename AADC to AADC3 and adtf-basic-software to AADC
+cd AADC
+./build_base.sh
+##adtf3 video1
+#25:30 ref to #ADTF Configuration Editor #adtf_guicontrol.exe
+#59:30 car
+##adtf3 video2
+#1:35:00 different AADC directory
+#1:49:00 TensorFlow w/ C** API & ADTF
+
+#### ADTF 2018 #ADTF 2018 on Windows according to AADC/AADCConfig.cmake /opt == c:/SDK
+#if (ADTF3_DIR) set (ADTF_DIR "C:/SDK/adtf/3.3.1")
+mkdir c:/SDK #install ADTF and dependencies to C:/SDK/ and ADTF to adtf/<version>
+git clone https://git.digitalwerk.net/aadc/adtf-basic-software
+#rename AADC to AADC3 and adtf-basic-software to AADC
+cd AADC
+
+#### Dell XPS 15 9550 #PCIe #NVMe #SSD #Ubuntu 18.04
+#### RST #Intel #RST #Rapid Storage Technology
+#mdadm -V #4.0-2ubuntu1.1 #manage MD devices aka Linux Software RAID #MD Multiple Devices driver
+https://wiki.ubuntuusers.de/Software-RAID/
+sudo apt install mdadm #parted #already newest #Generating /etc/mdadm/mdadm.conf
+#No such file or directory: /sbin/ldconfig.real /etc/ld.so.conf.d/i386-linux-gnu_EGL.conf /etc/ld.so.conf.d/i386-linux-gnu_GL.conf #end
 
 #### gazebosim.org install:
 curl -ssL http://get.gazebosim.org | sh
@@ -2192,18 +2451,31 @@ https://www.raspberrypi.org/documentation/configuration/config-txt.md
 cd C:\workspaces\sdks\android\platform-tools
 adb connect 10.0.0.14
 
-#### Windows IoT 14931
-#renamed to gwiot; default initial p@ssw0rd is now iotNNxxx
+#### Raspberry # Raspbian #Google #Voice Kit v1 installed on micro #SDXC SanDisk Ultra 64 GB
+#Raspbian Pixel standard user: pi (not gy) pw usual Linux
+#F:\Prg\RaspberryPi\GoogleVoiceKit\aiyprojects-2018-08-03.img.xz installed with #Etcher.io (like Universal-USB-Installer or Rufus in \VM)
 
-#### jetson tx2 named tegra-ubuntu; 5.5-19.76 V, static Ethernet IP 10.0.0.20 on router
+#### Raspberry # Raspbian #Google #Vision Kit v1.1 came with original old installation on micro #SDHC ADATA 8 GB
+#sudo apt-get upgrade #took more than 2 hours
+#2nd install on micro #SDHC SanDisk Ultra 32 GB from
+#https://github.com/google/aiyprojects-raspbian/releases/tag/v20180803 #one and same image for Voice and Vision
+#Raspbian Pixel standard user: pi (not gy) pw usual Linux
+#F:\Prg\RaspberryPi\GoogleVoiceKit\aiyprojects-2018-08-03.img.xz installed with #Etcher.io (like Universal-USB-Installer or Rufus in \VM)
+
+
+#### Windows IoT killed with Voice Kit image
+
+#### jetson tx2 #jetson named #tegra-ubuntu; 5.5-19.76 V, static Ethernet IP 10.0.0.20 on router
 #### vnc server unnecessary (#vino #vnc server installed)
-#16.04: Search for Desktop Sharing to configure Vino #18.04 Activities search for Settings > tab Sharing > click Screen Sharing to set as in 16.04
+#16.04: Search for Desktop Sharing to configure Vino
+#18.04 Activities search for Settings > tab Sharing > click Screen Sharing to set as in 16.04
 #and Software dconf to ^F / uncheck require-encryption
+#doubtful and not done:
 #sudo nano /etc/systemd/system/tightvncserver.service #suggested file doesn´t exist
 #ssh (below) for tightvnc login on Jetson not used; does it work? use encrypting vnc instead!?
 #ssh -L 5901:127.0.0.1:5901 -N -f -l username server_ip_address #ssh #tunnel for #vnc
 
-#### jetson ##jetpack 3.2 with L4T R28.2 install 20180318 using Dell Ubuntu 16.04 gu1604
+#### jetson #jetson #jetpack 3.2 with L4T R28.2 install 20180318 using Dell Ubuntu 16.04 gu1604
 #gu1604 fucked up by #Jetson ARM #JetPack cross-install BS
 #solution: add [arch=amd64] (,i386??) to all uncommented deb <link> entries sudo nohup gedit /etc/apt/sources.list e.g.
 deb [arch=amd64] http://de.archive.ubuntu.com/ubuntu/ xenial main restricted
@@ -2215,7 +2487,7 @@ deb [arch=amd64] https://apt.dockerproject.org/repo ubuntu-xenial main
 #also: The following packages have been kept back error with Google Chrome update; solution:
 sudo apt dist-upgrade
 
-#jetson ##jetpack 3.2 with L4T R28.2 install continued - check OS version
+#### jetson #jetson #jetpack 3.2 with L4T R28.2 install continued - check OS version
 head -n 1 /etc/nv_tegra_release #where R27 (release), Revision: 0.1 == 27.1
 #user nvidia pw nvidia changed to usual; user ubuntu pw ubuntu changed to usual
 mkdir j4t
@@ -2223,7 +2495,7 @@ cd j4t
 ../Downloads/JetPack-L4T-3.2-linux-x64_b196.run
 #20170331 host install only, incl extra CUDA 9.0.252-1 #in addition to /usr/local/cuda-8.0?
 #Install packages VisionWorks, CUDA Toolkit, Compile CUDA samples, TensorRT, OpenCV for Tegra, Multimedia API pack, cuDNN
-#OpenCV install problem; OpenCV found in /usr/bin, include, share; removed w Synaptic Package Manager
+#OpenCV install problem; OpenCV found in /usr/bin, include, share; removed w #Synaptic Package Manager
 #after setup right-click on desktop > Open Terminal Window
 #switch from FHD to 1920x1200
 xrandr #to list available resolutions; then
@@ -2231,8 +2503,10 @@ xrandr --output HDMI-0 --mode 1920x1200 --rate 59.95
 #open System Settings: wiggle resolution to make it stick for sure; add De kbd; change Settings
 #Search your Computer to add gedit, video, music
 #Ubuntu Software: browser
+#key to avoid CUDA,... apt update error:
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys F60F4B3D7FA2AF80
 
-#### VisionWorks #Jetson Nvidia #OpenVX lib Khronos.org
+#### VisionWorks #VisionWorks #Jetson Nvidia #OpenVX lib Khronos.org
 /usr/lib/libvisionworks.so,...
 /usr/share/visionworks/sources/ &cmake/
 /usr/share/doc/libvisionworks
@@ -2257,6 +2531,9 @@ cd \visionworks\demos\feature_tracker
 nmake
 #error LNK2001 nvxio in F:\VisionWorks\nvxio\include\NVXIO?
 
+#jetson #TensorRT https://github.com/NVIDIA-Jetson/tf_trt_models
+#BULLSHIT sudo commands!
+
 #### sequence analysis and phylogenetics Gundula Povysil 365.062 Fr 6.10. then 10.11. weekly
 #### spyder IDE in Anaconda
 conda upgrade spyder
@@ -2266,8 +2543,12 @@ dl = r'C:\dl' #raw string, else escape: dl = 'C:\\dl'
 'abc'.count('b'); 'abc'.replace('b', 't'); 'abc'.upper(); 'abc'[1:]; 'abc'[-1:] #neg from eos
 str(12);
 
+#### GitLab
+cd \dl\AADC
+git clone ssh://git@git.bioinf.jku.at:5792/aadc/adtf.git
 
-#### gitlab-ctl GitLab server Ubuntu install
+
+#### gitlab-ctl #GitLab server Ubuntu install
 ssh-keygen #all default
 sudo apt-get install -y curl openssh-server ca-certificates
 #postfix: edit /etc/postfix/main.cf (and others) as needed.
@@ -2344,8 +2625,7 @@ sudo apt install ruby-dev
 #gedit .bashrc; add:
 export GEM_HOME=$HOME/gems
 export PATH=$HOME/gems/bin:$PATH
-#activate .bashrc settings w:
-source ~/.bashrc #then
+source ~/.bashrc #activate .bashrc settings then
 gem install jekyll bundler tree #jekyll -v #3.7.3 #gem list jekyll
 #https://jekyllrb.com/docs/installation/
 #also: bundle update jekyll #or: gem update jekyll #and: gem update --system #for latest gems
