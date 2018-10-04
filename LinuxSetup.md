@@ -2543,6 +2543,9 @@ dl = r'C:\dl' #raw string, else escape: dl = 'C:\\dl'
 'abc'.count('b'); 'abc'.replace('b', 't'); 'abc'.upper(); 'abc'[1:]; 'abc'[-1:] #neg from eos
 str(12);
 
+#### git # SmartGit #SmartGit
+username = mail
+
 #### GitLab
 cd \dl\AADC
 git clone ssh://git@git.bioinf.jku.at:5792/aadc/adtf.git
